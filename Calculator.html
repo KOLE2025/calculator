@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Calculator</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .calculator {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        #display {
+            width: 100%;
+            height: 60px;
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            background-color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #666;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #999;
+        }
+
+        .operator {
+            background-color: #ff9500;
+        }
+
+        .function {
+            background-color: #4a4a4a;
+        }
+
+        .equals {
+            background-color: #007AFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <!-- Scientific Functions -->
+            <button class="function" onclick="addToDisplay('sin(')">sin</button>
+            <button class="function" onclick="addToDisplay('cos(')">cos</button>
+            <button class="function" onclick="addToDisplay('tan(')">tan</button>
+            <button class="function" onclick="addToDisplay('log(')">log</button>
+            <button class="function" onclick="addToDisplay('ln(')">ln</button>
+            
+            <button class="function" onclick="addToDisplay('?(')">?</button>
+            <button class="function" onclick="addToDisplay('^')">x^y</button>
+            <button class="function" onclick="addToDisplay('?')">?</button>
+            <button class="function" onclick="addToDisplay('e')">e</button>
+            <button class="function" onclick="addToDisplay('(')">(</button>
+            
+            <!-- Numbers and Basic Operators -->
+            <button onclick="addToDisplay('7')">7</button>
+            <button onclick="addToDisplay('8')">8</button>
+            <button onclick="addToDisplay('9')">9</button>
+            <button class="operator" onclick="addToDisplay('/')">/</button>
+            <button class="function" onclick="addToDisplay(')')">)</button>
+            
+            <button onclick="addToDisplay('4')">4</button>
+            <button onclick="addToDisplay('5')">5</button>
+            <button onclick="addToDisplay('6')">6</button>
+            <button class="operator" onclick="addToDisplay('*')">×</button>
+            <button class="function" onclick="clearDisplay()">C</button>
+            
+            <button onclick="addToDisplay('1')">1</button>
+            <button onclick="addToDisplay('2')">2</button>
+            <button onclick="addToDisplay('3')">3</button>
+            <button class="operator" onclick="addToDisplay('-')">-</button>
+            <button class="function" onclick="backspace()">?</button>
+            
+            <button onclick="addToDisplay('0')">0</button>
+            <button onclick="addToDisplay('.')">.</button>
+            <button class="operator" onclick="calculate()">=</button>
+            <button class="operator" onclick="addToDisplay('+')">+</button>
+            <button class="function" onclick="addToDisplay('!')">n!</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+
+        function addToDisplay(value) {
+            display.value += value;
+        }
+
+        function clearDisplay() {
+            display.value = '';
+        }
+
+        function backspace() {
+            display.value = display.value.slice(0, -1);
+        }
+
+        function factorial(n) {
+            if (n === 0 || n === 1) return 1;
+            return n * factorial(n - 1);
+        }
+
+        function calculate() {
+            try {
+                let expression = display.value;
+                
+                // Replace mathematical constants
+                expression = expression.replace(/?/g, Math.PI);
+                expression = expression.replace(/e/g, Math.E);
+                
+                // Handle square root
+                expression = expression.replace(/?/g, 'Math.sqrt');
+                
+                // Handle trigonometric functions
+                expression = expression.replace(/sin/g, 'Math.sin');
+                expression = expression.replace(/cos/g, 'Math.cos');
+                expression = expression.replace(/tan/g, 'Math.tan');
+                
+                // Handle logarithms
+                expression = expression.replace(/ln/g, 'Math.log');
+                expression = expression.replace(/log/g, 'Math.log10');
+                
+                // Handle power operator
+                expression = expression.replace(/\^/g, '**');
+                
+                // Handle factorial
+                if (expression.includes('!')) {
+                    const num = parseFloat(expression.match(/(\d+\.?\d*)!/)[1]);
+                    display.value = factorial(num);
+                    return;
+                }
+
+                const result = eval(expression);
+                display.value = result;
+            } catch (error) {
+                display.value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
